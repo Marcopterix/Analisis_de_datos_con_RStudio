@@ -7,23 +7,25 @@ library(PerformanceAnalytics)
 library(apaTables)
 
 
-excel_sheets("DB_Rab.xlsx")
+excel_sheets("home/DB_RABV.xlsx")
 
-Rabia <- read_xlsx("DB_Rab.xlsx")
+Rabia <- read_xlsx("home/DB_RABV.xlsx", sheet = "DB")
+
+#Rabia <- Rabia[,-c(1,3)]
 
 #Rabia <- Rabia[,c(1,3,10,11)]
 
-colnames(Rabia) <- c("ID", "Especie", "CT", "Intensidad","Longitud", "Estado")
+colnames(Rabia) <- c("ID", "Especie",  "Estado",  "Longitud", "CT", "Intensidad", "Genoma")
 
-Rabia <- Rabia[!is.na(Rabia$CT),]
-Rabia <- Rabia[!is.na(Rabia$Longitud),]
+#Rabia <- Rabia[!is.na(Rabia$CT),]
+#Rabia <- Rabia[!is.na(Rabia$Longitud),]
 
 ###############################################################################
 #                  Gráfico de dispersión de puntos y corr. de pearson
 ###############################################################################
-CT <- Rabia[,3]
-Intensidad <- Rabia[,4]
-Longitud <- Rabia[,5]
+CT <- Rabia[,5]
+Intensidad <- Rabia[,6]
+Longitud <- Rabia[,4]
 
 str(Intensidad)
 
@@ -36,12 +38,16 @@ resultados <- Rabia %>%
     corr_Long_Intensidad = cor(Longitud, Intensidad, method = "pearson")
   )
 
-
 print(resultados)
 
 Rabia <- Rabia %>%
   left_join(resultados, by = "Especie")
 ####################################################
+p <- cor(CT, Intensidad, method = "pearson")
+
+pL <- cor(CT, Longitud, method = "pearson")
+
+str(Rabia)
 
 Rabia$ID <- as.character(Rabia$ID)
 
@@ -49,22 +55,24 @@ LC <- ggplot(Rabia, aes(x = CT,
                         y =  Longitud, 
                         colour = Especie,
                         shape = Especie)) +
-  geom_point(size = 2.5) +
+  geom_point(size = 3) +
   theme_linedraw() +
-  scale_y_continuous(breaks = seq(0, 12000, 400)) +
+  scale_y_continuous(breaks = seq(0, 12000, 1000)) +
   scale_x_continuous(breaks = seq(0, 40, 1)) +
   labs(x="CT (qrt-PCR)", y="Longitud del contig (Secuenciación)") +
   #ggtitle("Correlación entre longitud del contig y CT en muestras de rabia secuenciadas") +
   theme(plot.title = element_text(hjust = 0.5, size = 10),
         plot.subtitle = element_text(hjust = 0.5),
         legend.position = "none",
-        strip.text = element_text(size = 16, face = "bold"),
+        strip.text = element_text(size = 30, face = "bold"),
         strip.background = element_rect(fill = "black")) +
   stat_smooth(method = "lm", se = FALSE,
               size = 1) +
+  theme(axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26)) +
   facet_wrap(~Especie, scales = "free_x") 
- #geom_text(data = resultados, aes(x = max(CT) - 12, y = max(Longitud) - 200, label = paste("r =", round(cor_Longitud_CT, 2))),
-            color = "black", size = 5, hjust = 1)
+  #geom_text(data = resultados, aes(x = max(CT) + 1, y = max(Longitud) + 200, label = paste("r =", round(cor_Longitud_CT, 2))),
+   #         color = "black", size = 5, hjust = 1)
 
 LC
 #  annotate("text", x = max(CT) -1, y = min(Longitud) + 1,
@@ -76,21 +84,29 @@ CI <- ggplot(Rabia, aes(x = Intensidad,
                         y =  CT, 
                         colour = Especie,
                         shape = Especie)) +
-  geom_point(size = 2) +
-  #theme_gray() +
-  scale_y_continuous(breaks = seq(0, 39, 1)) +
+  geom_point(size = 3) +
+  theme_linedraw() +
+  scale_y_continuous(breaks = seq(0, 39, 2)) +
   scale_x_continuous(breaks = seq(0, 4, 1)) +
   labs(x="Intensidad (Prueba de IFD)", y="CT (qPCR)") +
   # labs(x="Intensidad (Prueba de IFD)", y="CT (qPCR)", subtitle = "Correlación de Pearson = 0.58") +
   #ggtitle("Correlación entre longitud del contig y CT en muestras de rabia secuenciadas") +
-  theme(plot.title = element_text(hjust = 0.5),
+  theme(plot.title = element_text(hjust = 0.5, size = 10),
         plot.subtitle = element_text(hjust = 0.5),
-        legend.position = "none") +
+        legend.position = "none",
+        strip.text = element_text(size = 30, face = "bold"),
+        strip.background = element_rect(fill = "black")) +
   stat_smooth(method = "lm", se = FALSE,
               size = 1) +
-  facet_wrap(~ Especie) +
-  geom_text(data = resultados, aes(x = 3.5, y = 36, label = paste("r =", round(cor_Intensidad_CT, 2))),
-            color = "black", size = 5, hjust = 1)
+  theme(axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26)) +
+  facet_wrap(~ Especie) 
+  #geom_text(data = resultados, aes(x = 3.5, y = 36, label = paste("r =", round(cor_Intensidad_CT, 2))),
+   #         color = "black", size = 5, hjust = 1)
+
+
+CI
+
 
 LI <- ggplot(Rabia, aes(x = Intensidad, 
                         y =  Longitud, 
@@ -98,20 +114,19 @@ LI <- ggplot(Rabia, aes(x = Intensidad,
                         shape = Especie)) +
   geom_point(size = 3) +
   theme_linedraw() +
-  scale_y_continuous(breaks = seq(0, 12000, 400)) +
+  scale_y_continuous(breaks = seq(0, 12000, 1000)) +
   scale_x_continuous(breaks = seq(0, 4, 1)) +
   labs(x="Intensidad (Prueba de IFD)", y="Longitud del contig (Secuenciación)") +
   #ggtitle("Correlación entre longitud del contig y CT en muestras de rabia secuenciadas") +
   theme(plot.title = element_text(hjust = 0.5, size = 10),
         plot.subtitle = element_text(hjust = 0.5),
         legend.position = "none",
-        strip.text = element_text(size = 16, face = "bold"),
+        strip.text = element_text(size = 30, face = "bold"),
         strip.background = element_rect(fill = "black")) +
   stat_smooth(method = "lm", se = FALSE,
               size = 1) +
-  facet_wrap(~Especie, scales = "free_x") 
+  theme(axis.text = element_text(size = 24),
+        axis.title = element_text(size = 26)) +
+  facet_wrap(~Especie) 
 
 LI 
-
-
-CI
