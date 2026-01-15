@@ -145,11 +145,11 @@ phylo_rab2 <- rab_cenasa2 %<+% sample_data +
     geom_rootedge(rootedge = 1, size = 0.5, color = "black") + #Tamaño de raíz
   geom_text2(aes(subset=!isTip, label=label), size = 3.5, hjust = 0, vjust = 1, color="black") + #Valor boostrap +
    geom_cladelabel(node=18, label="C. perfringens", #Anotación externa de nodos
-                  color="red2", offset=3, align=TRUE) +
+                  color="red2", offset=3, align=TRUE, fontsize = 6, barsize = 1) +
   geom_cladelabel(node=20, label="P. sordellii", #Anotación externa de nodos
-                  color="steelblue", offset=3, align=TRUE) +
+                  color="steelblue", offset=3, align=TRUE, fontsize = 6, barsize = 1) +
   geom_cladelabel(node=15, label="C. botulinum", #Anotación externa de nodos
-                  color="darkgreen", offset=3, align=TRUE) 
+                  color="darkgreen", offset=3, align=TRUE, fontsize = 6, barsize = 1) 
 #labs(title = "Análisis filogenético del gen de Glucoproteina de muestras de rabia del CENASA")#, caption = "Marco Hernández | Patricia Mora | \n| 2024 | Biología molecular y Secuenciación | CENASA ") 
 
 phylo_rab2
