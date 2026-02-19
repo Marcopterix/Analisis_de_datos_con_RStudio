@@ -8,14 +8,6 @@ setwd("C:/Users/")
 
 exple <- read_xlsx("Downloads/SimEx_Brucella_metadata_and_quality_for_participants (1).xlsx")
 
-expleH <- exple [-c(1:14,16:18,26,28,30),]
-
-explA <- exple [-c(3,5,7,8,10,11,13:17,19:25,27:30),]
-
-explS <- exple [-c(1,2,4,6:13,15:30),]
-
-explM <- exple [-c(1:7,9,10,12:16,18:27,29,30),]
-
 TotalCount = nrow(exple)
 
 
@@ -37,63 +29,3 @@ plot <- ggplot(exple,
                date_labels = "%b %Y") +
   scale_fill_manual(values = custom_palette) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-
-#############################################
-
-plotH <- ggplot(expleH,
-       aes(x = Collection_date,
-           fill = Sample_material)) +
-  geom_bar(position = "stack") +
-  theme_bw() +
-  geom_histogram() +
- # scale_x_date(date_breaks = "4 day",
-  #             date_labels = "%d %b %Y") +
-   scale_x_date(date_breaks = "1 month",
-               date_labels = "%b %Y") +
-  scale_fill_manual(values = custom_palette) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) 
-
-#################################
-
-plotA <- ggplot(explA,
-                aes(x = Collection_date,
-                    fill = Sample_material)) +
-  geom_bar(position = "stack") +
-  theme_bw() +
-  geom_histogram() +
-  # scale_x_date(date_breaks = "4 day",
-  #             date_labels = "%d %b %Y") +
-  scale_x_date(date_breaks = "1 month",
-               date_labels = "%b %Y") +
-  scale_fill_manual(values = custom_palette) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-###################################
-
-plotS <- ggplot(explS,
-                aes(x = Collection_date,
-                    fill = Sample_material)) +
-  geom_bar(position = "stack") +
-  theme_bw() +
-  geom_histogram() +
-  # scale_x_date(date_breaks = "4 day",
-  #             date_labels = "%d %b %Y") +
-  scale_x_date(date_breaks = "1 month",
-               date_labels = "%b %Y") +
-  scale_fill_manual(values = custom_palette) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
-
-##########################################
-
-plotM <- ggplot(explM,
-                aes(x = Collection_date,
-                    fill = Sample_material)) +
-  geom_bar(position = "stack") +
-  theme_bw() +
-  geom_histogram() +
-  # scale_x_date(date_breaks = "4 day",
-  #             date_labels = "%d %b %Y") +
-  scale_x_date(date_breaks = "1 month",
-               date_labels = "%b %Y") +
-  scale_fill_manual(values = custom_palette) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
