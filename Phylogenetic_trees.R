@@ -26,7 +26,8 @@ library(tidyr)
 #BiocManager::install("ggtreeExtra")
 
 ##### Archivo para arbol filogenético #####
-rab_cenasa <- read.tree("/home/bioinfocenasa/Analisis_Corridas/IQTREE/Aln_Tabasco.fasta.treefile")
+rab_cenasa <- read.tree("/home/user/Analisis_Corridas/IQTREE/Aln_Tabasco.fasta.treefile")
+#rab_cenasa <- read.nexus("/home/user/Proyectos/Phylodinamic_RABV/BEAST_Phylogen/20260615/RABV_MCC_phylo.tree")
 
 plot(rab_cenasa, type= "p", cex=0.8, edge.width=2, font=3, label.offset=0.0005, edge.lty=1, node.pos=2)
 
@@ -83,14 +84,15 @@ custom_palette5 <- c("#FF8C00", "#1E90FF", "#8B7500", "#BA55D3")
 
 ######################  Preparación del arbol ##########################
 phylo_rab <- ggtree(rab_cenasa, 
-                                 layout = "rect",  
-                                 #layout = "circular",
-                                 #layout = "roundrect",
-                                 branch.length = 'none',
-                                 size = .5) + #%<+% sample_data +
+                    layout = "rect",  
+                    #layout = "circular",
+                    #layout = "roundrect",
+                    branch.length = 'branch.length',
+                    linewidth = .5) + #%<+% sample_data +
   #aes(color = "black") +
-  xlim(-10,  20) +
-  geom_tiplab(color = "black", size = 3, align = TRUE, offset = 0) + 
+  coord_cartesian(xlim = c(-200,1400)) +
+  geom_rootedge(rootedge = 100) +
+  geom_tiplab(color = "black", size = 3.5, align = TRUE, offset = 0) + 
   theme(axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         plot.title = element_text(size = 15,
@@ -98,8 +100,8 @@ phylo_rab <- ggtree(rab_cenasa,
                                   hjust = 0.5,
                                   vjust = -15),
         legend.box = "vertical", legend.margin = margin()) +
-   # geom_cladelabel(node=12, label="3 SNP's", #Anotación externa de nodos
-   #                 color="red2", offset=2, align=TRUE) + 
+  # geom_cladelabel(node=12, label="3 SNP's", #Anotación externa de nodos
+  #                 color="red2", offset=2, align=TRUE) + 
   # geom_cladelabel(node=176, label="8 SNP's", 
   #                 color="blue", offset=2.4, align=TRUE) +
   geom_text2(aes(subset=!isTip, label=label), size = 3, hjust = 0, vjust = 1, color="black")  #Valor boostrap 
