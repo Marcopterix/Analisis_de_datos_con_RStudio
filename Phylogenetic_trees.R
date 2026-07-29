@@ -117,8 +117,11 @@ rab_cenasa2 <- ggtree(rab_cenasa_root, layout = "rect",  branch.length = 'none',
   geom_rootedge(rootedge = 0.05, size = 5, color = "black")
 
 phylo_rab2 <- rab_cenasa2 %<+% sample_data + 
-  #aes(color = "black") +
-  xlim(-10,  15) +
+  aes(color = "black") +
+  # aes(color = Clado) +
+  coord_cartesian(xlim = c(-1,2)) + # ML
+  #coord_cartesian(xlim = c(-200,1700)) + # Bayesiano
+  geom_rootedge(rootedge = 50) +
   geom_tiplab(color = "black", size = 4, align = TRUE, offset = 0) + 
   # geom_tiplab(aes(color = Subclado), size = 3.3, align = TRUE, offset = 0.1) +
   # scale_color_manual(values = c("Bats" = "brown1",
