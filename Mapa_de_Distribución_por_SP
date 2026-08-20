@@ -9,11 +9,51 @@ library(readxl)
 #Por estados: https://www.inegi.org.mx/app/mapa/espacioydatos/
 
 mex_map <- st_read("Documentos/covid-19-mx-map/datos_covid/01_32_mun.shp")
-estados_mex <- st_read("Descargas/INEGI_Estatal_.shp") 
+estados_mex <- st_read("Proyectos/mapas/INEGI_Estatal_.shp", options = "ENCODING=WINDOWS-1252")
 
 mex_map %>%
   ggplot() +
   geom_sf()
+
+
+########## Creación de df por estados ##########
+
+
+Estados <- c("Baja California", "Baja California Sur",  "Sonora", "Sinaloa", "Chihuahua", "Durango",
+            "Coahuila de Zaragoza", "Nuevo León", "Tamaulipas",
+            "Nayarit", "Jalisco", "Colima", "Michoacán de Ocampo",
+            "Veracruz de Ignacio de la Llave", "Puebla", "Tlaxcala", "Hidalgo",
+            "Aguascalientes", "Guanajuato", "Querétaro", "San Luis Potosí", "Zacatecas",
+            "Ciudad de México", "México", "Morelos",
+            "Tabasco", "Campeche", "Yucatán", "Quintana Roo",
+            "Guerrero", "Oaxaca", "Chiapas")
+  
+Estados <- data.frame(Estados)  
+
+  Estados <- Estados %>%
+    mutate(
+      Region = case_when(
+        
+        Estados %in% c("Baja California", "Baja California Sur", "Sonora", "Sinaloa", "Chihuahua", "Durango") ~ "Noroeste",
+        Estados %in% c("Coahuila de Zaragoza", "Nuevo León", "Tamaulipas" ) ~ "Noreste",
+        Estados %in% c("Nayarit", "Jalisco", "Colima", "Michoacán de Ocampo") ~ "Occidente",
+        Estados %in% c("Veracruz de Ignacio de la Llave", "Puebla", "Tlaxcala", "Hidalgo") ~ "Oriente",
+        Estados %in% c("Aguascalientes", "Guanajuato", "Querétaro", "San Luis Potosí", "Zacatecas") ~ "Centronorte",
+        Estados %in% c("Ciudad de México", "México", "Morelos") ~ "Centrosur",
+        Estados %in% c("Tabasco", "Campeche", "Yucatán", "Quintana Roo") ~ "Sureste",
+        Estados %in% c("Guerrero", "Oaxaca", "Chiapas") ~ "Suroeste",
+        TRUE ~ NA_character_
+      )
+    )
+  
+  colnames(Estados) <- c("NOMBRE", "Region")
+
+#####
+
+estad_mex_map_rabia <- estados_mex %>%
+  left_join(Estados, by = "NOMBRE")
+
+
 
 #Cargar datos
 
@@ -55,6 +95,32 @@ ggplot(data = mex_map_rabia) +
   annotation_north_arrow(location='tr') +
   annotation_scale() +
   theme_bw()
+
+
+##################### Mapa de regiones con datos  ###############################
+ggplot(data = mex_map_rabia) +
+  geom_sf(aes(fill = AgV), color = "#7B868C", size = 0.1) +
+  #geom_sf(data = estad_mex_map_rabia, aes(color = Region), fill = NA) + 
+  geom_sf(data = estad_mex_map_rabia, fill = NA, aes( color = Region), size = 0.8) +
+  scale_color_manual(
+    values = c(
+      "Noroeste"    = "red",
+      "Noreste"     = "#F39C12",
+      "Occidente"   = "#F1D500",
+      "Oriente"     = "#C52BE8",
+      "Centronorte" = "#18A9D1",
+      "Centrosur"   = "green",
+      "Sureste"     = "#B7F000",
+      "Suroeste"    = "#4b0082"
+    ),
+    na.value = "white",
+    name = "Región"
+  ) +
+  scale_fill_brewer("Clado por municipio", palette = "Set1", na.value = "white") +
+  annotation_north_arrow(location='tr') +
+  annotation_scale() +
+  theme_bw() 
+
 
 ##################### Mapa de relieve con datos  ###############################
 relieve_map$RANGO <- factor(relieve_map$RANGO, 
