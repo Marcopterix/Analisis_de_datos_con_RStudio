@@ -5,9 +5,9 @@ library(tidyr)
 library(modeest)
 library(FinCal)
 
-excel_sheets("2026_EA_IA/H7_H5_estadisticos.xlsx")
+excel_sheets("IA/H7_H5_estadisticos.xlsx")
 
-estadistic <- read_xlsx("2026_EA_IA/H7_H5_estadisticos.xlsx", sheet = "Hoja1")
+estadistic <- read_xlsx("IA/H7_H5_estadisticos.xlsx", sheet = "Hoja1")
 
 estadistic$Ítem <- as.character(estadistic$Ítem)
 
