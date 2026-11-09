@@ -1,0 +1,107 @@
+library(readxl)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(modeest)
+library(FinCal)
+
+excel_sheets("2026_EA_IA/H7_H5_estadisticos.xlsx")
+
+estadistic <- read_xlsx("2026_EA_IA/H7_H5_estadisticos.xlsx", sheet = "Hoja1")
+
+estadistic$Ítem <- as.character(estadistic$Ítem)
+
+str(estadistic)
+
+
+H7Hom <- estadistic %>%
+         filter(Subtipo %in% "H7" &
+                  Prueba %in% "HOMOGENEIDAD" &
+                  !CT %in% "0")
+
+N3Hom <- estadistic %>%
+         filter(Subtipo %in% "N3" &
+                  Prueba %in% "HOMOGENEIDAD" &
+                  !CT %in% "0")
+  
+  
+H5Hom <- estadistic %>%
+         filter(Subtipo %in% "H5" &
+                  Prueba %in% "HOMOGENEIDAD" &
+                  !CT %in% "0")
+
+N2Hom <- estadistic %>%
+         filter(Subtipo %in% "N2" &
+                  Prueba %in% "HOMOGENEIDAD" & 
+                  !CT %in% "0")
+
+
+H7Est <- estadistic %>%
+         filter(Subtipo %in% "H7" &
+                  Prueba %in% "ESTABILIDAD" &
+                  !CT %in% "0")
+
+N3Est <- estadistic %>% 
+         filter(Subtipo %in% "N3" & 
+                Prueba %in% "ESTABILIDAD" &
+                  !CT %in% "0")
+
+H5Est <- estadistic %>%
+         filter(Subtipo %in% "H5" &
+                  Prueba %in% "ESTABILIDAD" &
+                  !CT %in% "0")
+
+N2Est <- estadistic %>%
+         filter(Subtipo %in% "N2" &
+                  Prueba %in% "ESTABILIDAD" &
+                  !CT %in% "0")
+
+#############
+#Descriptiva
+#############
+
+mean(N3Hom$CT, na.rm = TRUE)
+median(N3Hom$CT, na.rm = TRUE)
+
+
+#####################
+#Desviación estandar
+#####################
+
+sd(N3Hom$CT, na.rm = TRUE)
+
+##########
+#Varianza
+##########
+
+var(N3Hom$CT, na.rm = TRUE)
+
+###################
+#Coef. de Variación
+###################
+
+sd(N3Hom$CT)/mean(N3Hom$CT)
+
+coefficient.variation(sd=sd(N3Hom$CT), avg = mean(N3Hom$CT))
+
+
+##################
+#Gráfico de disp.
+##################
+
+ggplot(N2Hom, aes(x=Ítem,
+                  y=CT)) +
+  geom_point(size = 3) +
+  theme_linedraw() +
+  scale_y_continuous(breaks = seq(0, 17, 0.06)) +
+  labs(x="Ítem", y="CT") +
+  ggtitle("N2 Homogeneidad") +
+  theme(plot.title = element_text(hjust = 0.5, size = 20),
+        strip.text = element_text(size = 30, face = "bold"),
+        strip.background = element_rect(fill = "black")) +
+  geom_hline(yintercept = 14.28, color = "red", linetype = "solid", size = 1) +
+  theme(axis.text = element_text(size = 15),
+        axis.title = element_text(size = 16))
+  
+
+
